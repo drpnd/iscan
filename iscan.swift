@@ -31,21 +31,23 @@ class WiFiNetworkScanner {
             return nil
         }
         self.currentInterface = defaultInterface
-        //print("\(self.currentInterface.bssid())")
-        //print("\(self.currentInterface.cachedScanResults())")
     }
 
     func scanNetworks() {
         do {
             let networks = try currentInterface.scanForNetworks(withName: nil, includeHidden: true)
             for network in networks {
-                let ssid = network.ssid ?? "(hidden)"
-                let channelWidth = network.wlanChannel?.channelWidth ?? CWChannelWidth.widthUnknown
-                print("\(ssid.padding(toLength: 32, withPad: " ", startingAt: 0)) \(network.bssid ?? "--")\t\(network.wlanChannel?.channelNumber ?? -1)\t\(String(describing: channelWidth))\t\(network.rssiValue)\t\(network.noiseMeasurement)\t\(network.countryCode ?? "--")\t\(network.beaconInterval)")
+                printNetwork(withNetwork: network)
             }
         } catch let error as NSError {
             print("Error: \(error.localizedDescription)")
         }
+    }
+
+    func printNetwork(withNetwork network: CWNetwork) {
+        let ssid = network.ssid ?? "(hidden)"
+        let channelWidth = network.wlanChannel?.channelWidth ?? CWChannelWidth.widthUnknown
+        print("\(ssid.padding(toLength: 32, withPad: " ", startingAt: 0)) \(network.bssid ?? "--")\t\(network.wlanChannel?.channelNumber ?? -1)\t\(String(describing: channelWidth))\t\(network.rssiValue)\t\(network.noiseMeasurement)\t\(network.countryCode ?? "--")\t\(network.beaconInterval)")
     }
 }
 
